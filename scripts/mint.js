@@ -1,13 +1,16 @@
 const { task } = require("hardhat/config");
 const { getContract } = require("./helpers");
 const fetch = require("node-fetch");
+const { ethers } = require("ethers");
 
 task("mint", "Mints from the NFT contract")
 .addParam("address", "The address to receive a token")
 .setAction(async function (taskArguments, hre) {
     const contract = await getContract("NFT", hre);
+    const mintPrice = await contract.MINT_PRICE();
     const transactionResponse = await contract.mintTo(taskArguments.address, {
         gasLimit: 500_000,
+        value: mintPrice
     });
     console.log(`Transaction Hash: ${transactionResponse.hash}`);
 });
